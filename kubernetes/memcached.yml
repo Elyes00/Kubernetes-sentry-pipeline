@@ -14,7 +14,7 @@ spec:
   spec:
     containers:
       - name: memcached
-        image: memcached:alpine
+        image: elyes000/memcached:tagVersion
         ports:
           - containerPort: 11211
         volumeMounts:

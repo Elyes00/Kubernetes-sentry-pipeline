@@ -14,7 +14,9 @@ spec:
     spec:
       containers:
         - name: sentry-web
-          image: sentry:9.0-onbuild
+        #after pushing our docker image to docker hub w pull it with the tag that we defined
+        #the tagversion will be updated so that the kubernetes deployment file for postgres will always be tha latest version that we deployed on docker hub
+          image: elyes000/sentry:tagVersion
           env:
             - name: SENTRY_MEMCACHED_HOST
               value: service-sentry-memcached
