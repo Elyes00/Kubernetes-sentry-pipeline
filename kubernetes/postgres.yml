@@ -17,12 +17,6 @@ spec:
         image: elyes000/postgres:tagVersion
         ports:
           - containerPort: 5432
-        resources:
-          limits:
-            memory: "100Mi"
-            cpu: "0.5"
-          requests:
-            memory: "200Mi"
         volumeMounts:
           - mountPath: "/var/lib/postgresql/data"
             name: sentry 
