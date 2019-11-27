@@ -22,6 +22,10 @@ pipeline {
             steps{
                 sh "docker build . -t elyes000/sentry:${DOCKER_TAG} -f ./containers/sentry/Dockerfile "
             } 
+        stage ("build docker images for postgres"){
+            steps{
+                sh "docker build . -t elyes000/postgres:${DOCKER_TAG} -f ./containers/postgres/Dockerfile "
+            } 
 
     }
        
@@ -33,6 +37,7 @@ pipeline {
                     sh "docker push elyes000/nginx:${DOCKER_TAG}"
                     sh "docker push elyes000/memcached:${DOCKER_TAG}"
                     sh "docker push elyes000/sentry:${DOCKER_TAG}"
+                    sh "docker push elyes000/postgres:${DOCKER_TAG}"
                 }
             }
         }
