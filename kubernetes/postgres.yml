@@ -14,15 +14,15 @@ spec:
   spec:
     containers:
       - name: sentry
-        image: postgres:9.5
+        image: elyes000/postgres:tagVersion
         ports:
           - containerPort: 5432
         resources:
           limits:
-            memory: "500Mi"
+            memory: "100Mi"
             cpu: "0.5"
           requests:
-            memory: "400Mi"
+            memory: "200Mi"
         volumeMounts:
           - mountPath: "/var/lib/postgresql/data"
             name: sentry 
