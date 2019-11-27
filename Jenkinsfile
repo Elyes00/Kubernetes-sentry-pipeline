@@ -36,7 +36,24 @@ pipeline {
                 }
             }
         }
-
+        //ec2-user is our vm on AWS after deploying kubernetes
+         stage('Deploy to kubernetes'){
+            steps{
+                sh "chmod +x changetag.sh"
+                sh "./changetag.sh ${DOCKER_TAG}"
+                sshagent(['kops-machine']) {
+                    sh "scp -o StrictHostKeyChecking=no nginx-service.yml nginx.yml redis-service.yml redis.yml memcached.yml memcached-service.yml postgres-volume.yml postgres-service.yml postgres.yml 
+                    sentry-volume.yml sentry-service.yml sentry-web-service.yml sentry-web.yml sentry-worker.yml sentry-cron.yml 'ec2-user:/home/ec2-user/' "
+                    script{
+                        try{
+                            sh "ssh ec2-user kubectl apply -f ."
+                        }catch(error){
+                            sh "ssh ec2-user kubectl create -f ."
+                        }
+                    }
+                }
+            }
+        }
 
 
 }
