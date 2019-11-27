@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sentry
+spec:
+  selector:
+    matchLabels:
+      app: sentry
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sentry
+  spec:
+    containers:
+      - name: sentry
+        image: postgres:9.5
+        ports:
+          - containerPort: 5432
+        resources:
+          limits:
+            memory: "500Mi"
+            cpu: "0.5"
+          requests:
+            memory: "400Mi"
+        volumeMounts:
+          - mountPath: "/var/lib/postgresql/data"
+            name: sentry 
+            subPath: postgres
+    volumes:
+      - name: sentry
+        persipersistentVolumeClaim:
+          claimName: sentry-disk

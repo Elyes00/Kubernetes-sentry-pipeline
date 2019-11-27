@@ -1,0 +1,115 @@
+version: '2'
+
+services:
+  redis:
+    container_name: redis
+    image: redis
+    ports:
+    - "6379:6379"
+    volumes:
+    - pgdb:/var/lib/redis
+    restart: always
+    
+  memcached:
+    container_name: memcached
+    image: memcached:latest
+    ports:
+      - "11211:11211"
+    volumes:
+    - pgdb:/var/lib/memcached/data
+      
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_USER: sentry
+      POSTGRES_PASSWORD: sentry
+      POSTGRES_DB: sentry
+    volumes:
+     - pgdb:/var/lib/postgres/data
+
+  sentry:
+    image: sentry:9.0-onbuild
+    container_name: sentry
+    links:
+     - redis
+     - postgres
+    depends_on:
+     - redis
+     - postgres
+    ports:
+     - 9000:9000
+    environment:
+      #same key generated from the kubernetes command (kub.sh) after we decode it
+      SENTRY_SECRET_KEY: 'my key'
+      SENTRY_POSTGRES_HOST: 'postgres'
+      SENTRY_DB_USER: 'postgres'
+      SENTRY_DB_PASSWORD: 'sentry'
+      SENTRY_REDIS_HOST: 'redis'
+      SENTRY_SERVER_EMAIL: 'benamorelyes0@gmail.com'      
+      SENTRY_EMAIL_PORT: '587'
+      SENTRY_EMAIL_USER: 'xx@sentry.com'
+      SENTRY_EMAIL_PASSWORD: 'myGmailPassword'
+      SENTRY_EMAIL_USE_TLS: 'true'
+      ENTRY_WEB_PORT: '9000'
+      SENTRY_DB_NAME: 'postgres'
+      SENTRY_POSTGRES_PORT: '5432'
+      
+
+
+  cron:
+    image: sentry:9.0-onbuild
+    container_name: sentry-cron
+    links:
+     - redis
+     - postgres
+    depends_on:
+     - redis
+     - postgres
+    command: "sentry run cron"
+    environment:
+      #same key generated from the kubernetes command (kub.sh) after we decode it
+      SENTRY_SECRET_KEY: 'my key'
+      SENTRY_POSTGRES_HOST: 'postgres'
+      SENTRY_DB_USER: 'postgres'
+      SENTRY_DB_PASSWORD: 'sentry'
+      SENTRY_REDIS_HOST: 'redis'
+      SENTRY_SERVER_EMAIL: 'benamorelyes0@gmail.com'      
+      SENTRY_EMAIL_PORT: '587'
+      SENTRY_EMAIL_USER: 'xx@sentry.com'
+      SENTRY_EMAIL_PASSWORD: 'myGmailPassword'
+      SENTRY_EMAIL_USE_TLS: 'true'
+      ENTRY_WEB_PORT: '9000'
+      SENTRY_DB_NAME: 'postgres'
+      SENTRY_POSTGRES_PORT: '5432'
+
+
+  worker:
+    image: sentry:9.0-onbuild
+    container_name: sentry-worker
+    links:
+     - redis
+     - postgres
+    depends_on:
+     - redis
+     - postgres
+    command: "sentry run worker"
+    environment:
+      #same key generated from the kubernetes command (kub.sh) after we decode it
+      SENTRY_SECRET_KEY: 'my key'
+      SENTRY_POSTGRES_HOST: 'postgres'
+      SENTRY_DB_USER: 'postgres'
+      SENTRY_DB_PASSWORD: 'sentry'
+      SENTRY_REDIS_HOST: 'redis'
+      SENTRY_SERVER_EMAIL: 'benamorelyes0@gmail.com'      
+      SENTRY_EMAIL_PORT: '587'
+      SENTRY_EMAIL_USER: 'xx@sentry.com'
+      SENTRY_EMAIL_PASSWORD: 'myGmailPassword'
+      SENTRY_EMAIL_USE_TLS: 'true'
+      ENTRY_WEB_PORT: '9000'
+      SENTRY_DB_NAME: 'postgres'
+      SENTRY_POSTGRES_PORT: '5432'
+
+
+volumes:
+   pgdb:

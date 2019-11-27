@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sentry-web
+spec:
+  selector:
+    matchLabels:
+      app: sentry-web
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sentry-web
+    spec:
+      containers:
+        - name: sentry-web
+          image: sentry:9.0-onbuild
+          env:
+            - name: SENTRY_MEMCACHED_HOST
+              value: service-sentry-memcached
+            - name: SENTRY_REDIS_HOST
+              value: service-sentry-redis
+            - name: SENTRY_POSTGRES_HOST
+              value: service-sentry-pg
+            - name: SENTRY_SERVER_EMAIL
+              value: benamorelyes0@gmail.com
+            - name: SENTRY_EMAIL_HOST
+              value: smtp.gmail.com
+            - name: SENTRY_EMAIL_PORT
+              value: '587'
+            - name: SENTRY_EMAIL_USE_TLS
+              value: 'true'
+            - name: SENTRY_EMAIL_USER
+              value: 'xx@sentry.com'
+            - name: SENTRY_EMAIL_PASSWORD
+              value: myGmailPassword
+            - name: SENTRY_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: sentry-secret
+                  key: sentry_secret_key
+          resources:
+            limits:
+              memory: "500Mi"
+              cpu: "0.5"
+            requests:
+              memory: "400Mi"
+          ports:
+            - name: http
+              containerPort: 9000
+          volumeMounts:
+            - mountPath: "/var/lib/sentry/files"
+              name: staging-sentry-files
+      volumes:
+        - name: staging-sentry-files
+          persistentVolumeClaim:
+            claimName: sentry-files-disk

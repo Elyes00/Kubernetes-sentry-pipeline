@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sentry
+spec:
+  selector:
+    matchLabels:
+      app: sentry
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sentry
+  spec:
+    containers:
+      - name: redis
+        image: redis
+        ports:
+          - containerPort: 6379
+        volumeMounts:
+          - mountPath: "/var/lib/redis"
+            name: sentry 
+            subPath: redis
+    volumes:
+      - name: sentry
+        persipersistentVolumeClaim:
+          claimName: sentry-disk

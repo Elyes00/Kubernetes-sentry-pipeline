@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sentry
+spec:
+  selector:
+    matchLabels:
+      app: sentry
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sentry
+  spec:
+    containers:
+      - name: memcached
+        image: memcached:alpine
+        ports:
+          - containerPort: 11211
+        volumeMounts:
+          - mountPath: "/var/lib/memcached/data"
+            name: sentry
+            subPath: memcached
+    volumes:
+      - name: sentry
+        persipersistentVolumeClaim:
+          claimName: sentry-disk

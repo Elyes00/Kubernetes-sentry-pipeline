@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sentry-files-disk
+spec:
+  accessModes:
+  - ReadWriteMany
+  storageClassName: gcp-file
+  resources:
+    requests:
+      storage: 3Gi
