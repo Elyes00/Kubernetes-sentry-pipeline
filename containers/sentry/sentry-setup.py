@@ -40,7 +40,7 @@ SENTRY_SINGLE_ORGANIZATION = env('SENTRY_SINGLE_ORGANIZATION', True)
 
 redis = env('SENTRY_REDIS_HOST') or (env('REDIS_PORT_6379_TCP_ADDR') and 'redis')
 if not redis:
-    raise Exception('Error: REDIS_PORT_6379_TCP_ADDR (or SENTRY_REDIS_HOST) is undefined, did you forget to `--link` a redis container?')
+    raise Exception('Error: REDIS_PORT_6379_TCP_ADDR  is undefined /--link` a redis container?')
 
 redis_password = env('SENTRY_REDIS_PASSWORD') or ''
 redis_port = env('SENTRY_REDIS_PORT') or '6379'
@@ -89,15 +89,3 @@ SENTRY_OPTIONS['filestore.options'] = {
     'location': env('SENTRY_FILESTORE_DIR'),
 }
 
-
-if env('SENTRY_USE_SSL', False):
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
-
-SENTRY_WEB_HOST = '0.0.0.0'
-SENTRY_WEB_PORT = 9000
-SENTRY_WEB_OPTIONS = {
-  
-}
