@@ -17,10 +17,6 @@ spec:
         image: elyes000/memcached:tagVersion
         ports:
           - containerPort: 11211
-        volumeMounts:
-          - mountPath: "/var/lib/memcached/data"
-            name: sentry
-            subPath: memcached
     volumes:
       - name: sentry
         persipersistentVolumeClaim:
