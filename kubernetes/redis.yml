@@ -17,10 +17,7 @@ spec:
         image: redis
         ports:
           - containerPort: 6379
-        volumeMounts:
-          - mountPath: "/var/lib/redis"
-            name: sentry 
-            subPath: redis
+        
     volumes:
       - name: sentry
         persipersistentVolumeClaim:
