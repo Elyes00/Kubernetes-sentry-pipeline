@@ -38,16 +38,18 @@ pipeline {
                     sh "docker push elyes000/memcached:${DOCKER_TAG}"
                     sh "docker push elyes000/sentry:${DOCKER_TAG}"
                     sh "docker push elyes000/postgres:${DOCKER_TAG}"
+                    
                 }
             }
         }
+      
         //ec2-user is our vm on AWS after deploying kubernetes
          stage('Deploy to kubernetes'){
             steps{
                 sh "chmod +x changetag.sh"
                 sh "./changetag.sh ${DOCKER_TAG}"
                 sshagent(['my host']) {
-                    sh "scp -o StrictHostKeyChecking=no nginx-service.yml nginx.yml redis-service.yml redis.yml memcached.yml memcached-service.yml postgres-volume.yml postgres-service.yml postgres.yml 
+                    sh "scp -o StrictHostKeyChecking=no postgres-volume.yml sentry-volume.yml kub.sh transform.sh upgrade-base.sh decode.sh secret.yml  nginx-service.yml nginx.yml redis-service.yml redis.yml memcached.yml memcached-service.yml postgres-volume.yml postgres-service.yml postgres.yml 
                     sentry-volume.yml sentry-service.yml sentry-web-service.yml sentry-web.yml sentry-worker.yml sentry-cron.yml 'ec2-user@xxx:/home/ec2-user/' "
                     script{
                         try{
